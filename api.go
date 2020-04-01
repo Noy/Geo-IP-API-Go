@@ -1,6 +1,7 @@
 package main
 
 import (
+	utils "github.com/TrafficLabel/Go-Utilities"
 	"net"
 	"github.com/oschwald/geoip2-golang"
 	"log"
@@ -55,8 +56,17 @@ func validate(request *http.Request, writer http.ResponseWriter, ) (*geoip2.City
 	}
 	defer db.Close()
 	ip := request.FormValue("ip")
-	record, err := db.City(net.ParseIP(ip))
-	log.Printf("REQUEST INCOME FROM - %s",ip)
+	currentIP := utils.GetRealAddr(request)
+	if ip == "" {
+		return handleIP(currentIP, db)
+	} else {
+		return handleIP(ip, db)
+	}
+}
+
+func handleIP(ip string, reader *geoip2.Reader) (*geoip2.City, error) {
+	record, err := reader.City(net.ParseIP(ip))
+	log.Printf("REQUEST INCOME FROM - %s", ip)
 	return record, err
 }
 

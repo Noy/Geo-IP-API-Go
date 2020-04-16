@@ -92,12 +92,9 @@ func validate(writer http.ResponseWriter, request *http.Request) (*geoip2.City, 
 	}
 	record, err := db.City(net.ParseIP(ip))
 	if err != nil {
-		log.Println(err.Error())
-	}
-	log.Printf("REQUEST INCOME FROM - %s", ip)
-	if err != nil {
 		handleError(err)
 	}
+	log.Printf("REQUEST INCOME FROM - %s", ip)
 	lang := request.FormValue("lang")
 	if lang == "" {
 		lang = "en"
